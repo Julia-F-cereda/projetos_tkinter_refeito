@@ -4,9 +4,12 @@ from menu_cadastro import Menu_cadastro
 import sqlite3
 class Menu_login():
    #o sel.menu_login é o nome da janela
-   def __init__(self, janela_pai):
-      self.menu_login = ttk.Toplevel(janela_pai)
-      self.janela_pai = janela_pai
+   def __init__(self, classe_pai):
+
+      self.janela_pai = classe_pai.menu_lista
+      self.classe_pai = classe_pai
+
+      self.menu_login = ttk.Toplevel(self.janela_pai)
       self.menu_login.geometry("1920x1080")
 
       #fechar a janela e eencerrar programa
@@ -89,7 +92,8 @@ class Menu_login():
          tkinter.messagebox.showinfo(title="cadastro",message=f"Bem vindo, {resultado[0]}!!")
          self.menu_login.destroy()
          self.janela_pai.deiconify()
-         self.janela_pai.self.usuario = usuario
+         self.classe_pai.usuario = usuario
+         self.classe_pai.atualizar_lista()
          
       else:
          tkinter.messagebox.showerror(title="cadastro",message="Login e senha Incorreto")

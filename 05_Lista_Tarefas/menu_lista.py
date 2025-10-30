@@ -51,6 +51,9 @@ class Menu_lista:
       self.botao_concluir = ttk.Button(self.frame_final, text="Concluir", padding="10", command= self.concluir)
       self.botao_concluir.pack(side="right", padx=10, pady=10)
 
+      self.usuario = None
+
+
 #######################################################################################################################################
 #esse serve para criar a tabela
       conexao = sqlite3.connect("05_Lista_Tarefas/bd_lista_tarefa.sqlite")
@@ -78,7 +81,7 @@ class Menu_lista:
       cursor.close()
       conexao.close()
 
-      Menu_login(self.menu_lista)
+      Menu_login(self)
 
       self.menu_lista.withdraw()
 
@@ -97,12 +100,12 @@ class Menu_lista:
       cursor = conexao.cursor()
 
       #criando as informações da tabela
-      sql_select_tabela = """
-                          SELECT codigo, descricao_tarefa, concluida FROM tarefa;
+      self.sql_select_tabela = """
+                          SELECT codigo, descricao_tarefa, concluida FROM tarefa WHERE usuario = ?;
                               """
       #para executar a tabela
 
-      cursor.execute(sql_select_tabela)
+      cursor.execute(self.sql_select_tabela, [self.usuario])
       self.lista_de_tarefas = cursor.fetchall()
       self.lista.delete(0, self.lista.size())
       for linha in self.lista_de_tarefas:
@@ -117,26 +120,10 @@ class Menu_lista:
 #adicionar tarefa
     def adicionando(self):
       self.texto = self.caixa_tarefa.get()
-
-      #esse codigo vai fazer com que abra o banco, veja a tarefa que foi selecionada e muda ela de 0(que é quando nao ta concluida) 
-      # para 1(que conclui)
-      # Conecta ao banco e marca a tarefa como concluída
-      conexao = sqlite3.connect("05_Lista_Tarefas/bd_lista_tarefa.sqlite")
-      cursor = conexao.cursor()
-
-      cursor.execute("""
-                    INSERT no banco
-      cursor.execute("INSERT INTO tarefa (descricao_tarefa) VALUES (?)", [self.texto])""")
-
-      conexao.commit()
-      cursor.close()
-      conexao.close()
       self.lista.insert(tk.END, self.texto)  # adiciona a escrita no final da lista
       self.caixa_tarefa.delete(0, tk.END)  #para limpar a caixa de texto automaticamnete
 
-#--------------------------------------------------------------------------------------------------------------------------------------
-#criando o sql para adicionar as tarefas
-       #criando a ocnexao
+
       conexao = sqlite3.connect("05_Lista_Tarefas/bd_lista_tarefa.sqlite")
 
       #criando o cursor
@@ -144,11 +131,11 @@ class Menu_lista:
 
       #informações
       sql_inserir = """
-                        INSERT INTO tarefa (descricao_tarefa)
-                        VALUES (?)
+                        INSERT INTO tarefa (descricao_tarefa, usuario)
+                        VALUES (?, ?)
                     """
       #executar a tabela
-      cursor.execute(sql_inserir,[self.texto])
+      cursor.execute(sql_inserir,[self.texto, self.usuario])
 
       conexao.commit()
       cursor.close()

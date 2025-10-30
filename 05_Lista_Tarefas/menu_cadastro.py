@@ -57,8 +57,6 @@ class Menu_cadastro():
 
         self.criar_tabela_usuario()
 
-        self.usuario = None
-
 #############################################################################################################
     def criar_tabela_usuario(self):
        #criar conexao
@@ -70,7 +68,8 @@ class Menu_cadastro():
                     CREATE TABLE IF NOT EXISTS usuario (
                     nome VARCHAR (80),
                     usuario VARCHAR(20) PRIMARY KEY,
-                    senha VARCHAR(20)  
+                    senha VARCHAR(20)
+                      )
                           """)
        #comitar
        conexao.commit()
